@@ -94,6 +94,7 @@
     gap: 5vh;
     position: relative;
     margin: 2vh 0;
+    
   }
 
   .menu-overlay a {
@@ -116,12 +117,20 @@
     position: relative;
   }
 
+  /* Swapped directions */
+  .img-wrapper.left img {
+    clip-path: inset(0% 0% 0% 100%); /* opens from right to left */
+  }
+
+  .img-wrapper.right img {
+    clip-path: inset(0% 100% 0% 0%); /* opens from left to right */
+  }
+
   .img-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transform: scale(1.2);
-    clip-path: inset(0% 100% 0% 0%);
   }
 
   @media (max-width: 640px) {
@@ -150,33 +159,33 @@
 <!-- MENU OVERLAY -->
 <div class="menu-overlay" id="menuOverlay">
   <div class="menu-link-wrapper">
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/writer-1.jpg" alt=""></div>
+    <div class="img-wrapper left"><img src="https://moussamamadou.github.io/menu-gsap/images/writer-1.jpg" alt=""></div>
     <a href="#">HOME</a>
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/writer-2.jpg" alt=""></div>
+    <div class="img-wrapper right"><img src="https://moussamamadou.github.io/menu-gsap/images/writer-2.jpg" alt=""></div>
   </div>
 
   <div class="menu-link-wrapper">
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/cop-1.jpg" alt=""></div>
+    <div class="img-wrapper left"><img src="https://moussamamadou.github.io/menu-gsap/images/cop-1.jpg" alt=""></div>
     <a href="#">ABOUT</a>
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/cop-2.jpg" alt=""></div>
+    <div class="img-wrapper right"><img src="https://moussamamadou.github.io/menu-gsap/images/cop-2.jpg" alt=""></div>
   </div>
 
   <div class="menu-link-wrapper">
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/dance-1.jpg" alt=""></div>
+    <div class="img-wrapper left"><img src="https://moussamamadou.github.io/menu-gsap/images/dance-1.jpg" alt=""></div>
     <a href="#">PROJECTS</a>
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/dance-1.jpg" alt=""></div>
+    <div class="img-wrapper right"><img src="https://moussamamadou.github.io/menu-gsap/images/dance-1.jpg" alt=""></div>
   </div>
 
   <div class="menu-link-wrapper">
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/suits-1.jpg" alt=""></div>
+    <div class="img-wrapper left"><img src="https://moussamamadou.github.io/menu-gsap/images/suits-1.jpg" alt=""></div>
     <a href="#">JOURNAL</a>
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/suits-1.jpg" alt=""></div>
+    <div class="img-wrapper right"><img src="https://moussamamadou.github.io/menu-gsap/images/suits-1.jpg" alt=""></div>
   </div>
 
   <div class="menu-link-wrapper">
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/writer-2.jpg" alt=""></div>
+    <div class="img-wrapper left"><img src="https://moussamamadou.github.io/menu-gsap/images/writer-2.jpg" alt=""></div>
     <a href="#">CONTACT</a>
-    <div class="img-wrapper"><img src="https://moussamamadou.github.io/menu-gsap/images/writer-1.jpg" alt=""></div>
+    <div class="img-wrapper right"><img src="https://moussamamadou.github.io/menu-gsap/images/writer-1.jpg" alt=""></div>
   </div>
 </div>
 
@@ -190,9 +199,8 @@
   const menuLinks = document.querySelectorAll('.menu-link-wrapper');
 
   let isOpen = false;
-  let firstHover = true; // flag for first-time hover
 
-  // Menu open/close
+  // Menu open/close animation
   menuBtn.addEventListener('click', () => {
     isOpen = !isOpen;
     if (isOpen) {
@@ -208,31 +216,21 @@
     }
   });
 
-  // Hover animations for each link’s images
+  // Hover effect (swapped directions)
   menuLinks.forEach(wrapper => {
-    const imgs = wrapper.querySelectorAll('.img-wrapper img');
+    const leftImg = wrapper.querySelector('.left img');
+    const rightImg = wrapper.querySelector('.right img');
+
     wrapper.addEventListener('mouseenter', () => {
-      if (firstHover) {
-        // both open same direction (once)
-        gsap.to(imgs, {
-          clipPath: 'inset(0% 0% 0% 0%)',
-          scale: 1,
-          duration: 0.8,
-          ease: 'expo.out'
-        });
-        firstHover = false;
-      } else {
-        // alternating directions after first hover
-        gsap.to(imgs[0], { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.out' });
-        gsap.to(imgs[1], { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.out', delay: 0.1 });
-        gsap.to(imgs, { scale: 1, duration: 0.8, ease: 'power3.out' });
-      }
+      gsap.to(leftImg, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.out' }); // right-to-left open
+      gsap.to(rightImg, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.out' }); // left-to-right open
+      gsap.to([leftImg, rightImg], { scale: 1, duration: 0.8, ease: 'power3.out' });
     });
 
     wrapper.addEventListener('mouseleave', () => {
-      gsap.to(imgs[0], { clipPath: 'inset(0% 0% 0% 100%)', duration: 0.8, ease: 'power2.inOut' });
-      gsap.to(imgs[1], { clipPath: 'inset(0% 100% 0% 0%)', duration: 0.8, ease: 'power2.inOut' });
-      gsap.to(imgs, { scale: 1.2, duration: 0.8, ease: 'power2.out' });
+      gsap.to(leftImg, { clipPath: 'inset(0% 0% 0% 100%)', duration: 0.8, ease: 'power2.inOut' }); // closes to right
+      gsap.to(rightImg, { clipPath: 'inset(0% 100% 0% 0%)', duration: 0.8, ease: 'power2.inOut' }); // closes to left
+      gsap.to([leftImg, rightImg], { scale: 1.2, duration: 0.8, ease: 'power2.out' });
     });
   });
 </script>
